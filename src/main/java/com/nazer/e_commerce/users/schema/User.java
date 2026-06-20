@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -52,6 +53,7 @@ public class User {
     
     private String fullName;
 
+    @Indexed(unique = true)
     @NotBlank(message = "email is required")
     @Email(message = "email must be a valid format => user@exaple.com")
     private String email;

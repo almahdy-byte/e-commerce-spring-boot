@@ -18,19 +18,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping({"/users", "/usres"})
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
     public UserController(UserService userService){
         this.userService = userService;
     }
-    @GetMapping("")
+    @GetMapping("/me")
     public User getProfile(){
       return this.userService.getProfile();
     }
 
-    @PutMapping("")
+    @PutMapping("/me")
     public User updateProfile(@RequestBody @Valid UpdateProfileDto dto){
       return this.userService.updateProfile(dto);
     }
