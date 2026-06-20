@@ -1,0 +1,179 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "E-Commerce API",
+    "description": "REST API for the E-Commerce platform",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/": {
+      "post": {
+        "summary": "Register a new user",
+        "operationId": "register",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegisterRequest": {
+        "type": "object",
+        "required": [
+          "firstName",
+          "lastName",
+          "email",
+          "password",
+          "phoneNumber",
+          "dob"
+        ],
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 15,
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 15,
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@example.com"
+          },
+          "password": {
+            "type": "string",
+            "minLength": 6,
+            "example": "secret123"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "+123456789"
+          },
+          "dob": {
+            "type": "string",
+            "format": "date",
+            "example": "1990-01-01"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRoles"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "MongoDB ObjectId as hex string",
+            "example": "665a1b2c3d4e5f6a7b8c9d0e"
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "fullName": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "secret123"
+          },
+          "role": {
+            "$ref": "#/components/schemas/UserRoles"
+          },
+          "provider": {
+            "$ref": "#/components/schemas/Provider"
+          },
+          "isDeleted": {
+            "type": "boolean",
+            "default": false
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "+123456789"
+          },
+          "dob": {
+            "type": "string",
+            "format": "date",
+            "example": "1990-01-01"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Email already exist"
+          },
+          "status": {
+            "type": "integer",
+            "example": 400
+          }
+        }
+      },
+      "UserRoles": {
+        "type": "string",
+        "enum": ["USER", "ADMIN"],
+        "default": "USER"
+      },
+      "Provider": {
+        "type": "string",
+        "enum": ["SYSTEM", "GOOGLE"],
+        "default": "SYSTEM"
+      }
+    }
+  }
+}

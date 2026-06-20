@@ -1,0 +1,22 @@
+server:
+  port: 3000
+
+spring:
+  application:
+    name: e-commerce
+  data:
+    mongodb:
+      uri: "mongodb://localhost:27017/e-commerce"
+  main:
+    banner-mode: "off"
+
+logging:
+  level:
+    root: WARN
+    org.springframework: WARN
+    org.mongodb: WARN
+    org.springframework.boot.autoconfigure: WARN
+app:
+  encryption:
+      secret-key: "secrek-key-for-encryption"
+      algorithem: "AES"
