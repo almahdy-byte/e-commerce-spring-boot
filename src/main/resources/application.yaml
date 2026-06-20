@@ -33,7 +33,7 @@ app:
     algorithem: "${APP_ENCRYPTION_ALGORITHM:AES}"
   jwt:
     jwtSecretKey: "${APP_JWT_SECRET_KEY:my-super-secret-key-thats-long-enough-for-hmac-sha-256}"
-    accessTokenExpiration: "${APP_JWT_ACCESS_EXPIRATION:10800000}"
+    accessTokenExpiration: "${APP_JWT_ACCESS_EXPIRATION:259200000}"
     refreshTokenExpiration: "${APP_JWT_REFRESH_EXPIRATION:604800000}"
   email:
     to: "${APP_MAIL_TO:}"

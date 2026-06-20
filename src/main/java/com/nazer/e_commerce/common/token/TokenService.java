@@ -1,8 +1,6 @@
 package com.nazer.e_commerce.common.token;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import javax.crypto.SecretKey;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,31 +55,26 @@ public class TokenService {
 
     private String buildToken(TokenPayload payload , Long expiration){
         try {
-            Map<String, Object> claims = new HashMap<>();
-            claims.put("role", payload.getRole());
-
             String token = Jwts.builder()
-                .setSubject(payload.getId().toHexString())
-                .addClaims(claims)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .subject(payload.getId().toHexString())
+                .claim("role", payload.getRole())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key)
                 .compact();
             return token;
         } catch (Exception e) {
-            // TODO: handle exception
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     public TokenPayload decodeToken(String token){
-
         try {
             Claims claims = Jwts.parser()
-                .setSigningKey(key)
+                .verifyWith(key)
                 .build()
-                .parseClaimsJwt(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
             return TokenPayload.builder()
                 .id(new ObjectId(claims.getSubject()))
                 .role(UserRoles.valueOf(claims.get("role", String.class)))
@@ -98,6 +91,3 @@ public class TokenService {
         return new LoginResponseDto(accessToken, refreshToken);
     }
 }
- 
-
-    

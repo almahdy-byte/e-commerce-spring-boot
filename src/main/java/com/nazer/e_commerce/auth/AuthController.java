@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nazer.e_commerce.auth.Dto.RigsterDto;
+import com.nazer.e_commerce.auth.service.AuthService;
 import com.nazer.e_commerce.auth.Dto.LoginResponseDto;
 import com.nazer.e_commerce.auth.Dto.LoginDto;
 import com.nazer.e_commerce.users.schema.User;

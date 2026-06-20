@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nazer.e_commerce.users.enums.Provider;
@@ -29,7 +30,13 @@ import lombok.*;
 public class User {
 
     @Id
+    @Getter(AccessLevel.NONE)
     private ObjectId id;
+
+    @JsonIgnore
+    public ObjectId getId() {
+        return id;
+    }
 
     @JsonProperty("_id")
     public String get_id() {
@@ -49,6 +56,7 @@ public class User {
     @Email(message = "email must be a valid format => user@exaple.com")
     private String email;
 
+    @JsonIgnore
     private String password;
 
 

@@ -1,4 +1,4 @@
-package com.nazer.e_commerce.auth;
+package com.nazer.e_commerce.auth.service;
 
 import java.util.Optional;
 
