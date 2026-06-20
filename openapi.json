@@ -12,7 +12,7 @@
     }
   ],
   "paths": {
-    "/": {
+    "/auth/register": {
       "post": {
         "summary": "Register a new user",
         "operationId": "register",
@@ -40,6 +40,45 @@
           },
           "400": {
             "description": "Validation error or email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login with email and password",
+        "operationId": "login",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful, returns JWT tokens",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid email or password",
             "content": {
               "application/json": {
                 "schema": {
@@ -101,6 +140,39 @@
           }
         }
       },
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@example.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "secret123"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token",
+            "example": "eyJhbGciOiJIUzI1NiJ9..."
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "JWT refresh token",
+            "example": "eyJhbGciOiJIUzI1NiJ9..."
+          }
+        }
+      },
       "User": {
         "type": "object",
         "properties": {
@@ -128,7 +200,8 @@
           },
           "password": {
             "type": "string",
-            "example": "secret123"
+            "description": "Hashed password",
+            "example": "$2a$10$..."
           },
           "role": {
             "$ref": "#/components/schemas/UserRoles"
@@ -142,6 +215,7 @@
           },
           "phoneNumber": {
             "type": "string",
+            "description": "Encrypted phone number",
             "example": "+123456789"
           },
           "dob": {

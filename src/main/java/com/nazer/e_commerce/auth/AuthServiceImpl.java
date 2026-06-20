@@ -3,22 +3,29 @@ package com.nazer.e_commerce.auth;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.nazer.e_commerce.auth.Dto.*;
+import com.nazer.e_commerce.common.email.EmailService;
 import com.nazer.e_commerce.common.security.SecurityService;
+import com.nazer.e_commerce.common.token.TokenPayload;
+import com.nazer.e_commerce.common.token.TokenService;
 import com.nazer.e_commerce.users.repository.UserRepository;
 import com.nazer.e_commerce.users.schema.User;
 
 @Service
 public class AuthServiceImpl implements AuthService {
+
     private UserRepository userRepository;
     private SecurityService securityService;
-    public AuthServiceImpl(UserRepository userRepository , SecurityService securityService){
+    private TokenService tokenService;
+    private EmailService emailService;
+    public AuthServiceImpl(UserRepository userRepository , SecurityService securityService, TokenService tokenService, EmailService emailService){
         this.userRepository = userRepository;
         this.securityService = securityService;
+        this.tokenService = tokenService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -31,6 +38,15 @@ public class AuthServiceImpl implements AuthService {
                     "Email already exist"
             );
         }
+        
+        String encryptedPhone = null;
+        if (request.getPhoneNumber() != null) {
+            try {
+                encryptedPhone = this.securityService.encrypt(request.getPhoneNumber());
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            }
+        }
 
         User createUser = User.builder()
                             .email(request.getEmail())
@@ -39,9 +55,11 @@ public class AuthServiceImpl implements AuthService {
                             .fullName(request.getFirstName() + " " + request.getLastName())
                             .password(this.securityService.hash(request.getPassword()))
                             .role(request.getRole())
-                            .phoneNumber(this.securityService.encrypt(request.getPhoneNumber()))
+                            .phoneNumber(encryptedPhone)
                             .build();
 
+
+        this.emailService.sendHtmlEmail(request.getEmail(), "Welcome to our platform", "<h1>Welcome to our platform</h1>");
         User saveUser = this.userRepository.save(createUser);
         return saveUser;
 
@@ -65,7 +83,8 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
-        LoginResponseDto respone = new LoginResponseDto("a7a" , "a7a2");
+        TokenPayload payload = new TokenPayload(user.getId(), user.getRole());
+        LoginResponseDto respone = this.tokenService.generateTokens(payload);
         return respone;
     }
     

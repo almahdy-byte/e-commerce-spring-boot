@@ -20,7 +20,7 @@ import jakarta.validation.constraints.Past;
 import lombok.*;
 
 
-@Document(collation = "users")
+@Document(collection = "users")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

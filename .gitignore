@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Generated ###
+openapi.json
+.env
+openapi.json

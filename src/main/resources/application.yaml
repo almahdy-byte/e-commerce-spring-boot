@@ -1,22 +1,39 @@
 server:
   port: 3000
+  error:
+    include-stacktrace: never
 
 spring:
   application:
     name: e-commerce
-  data:
-    mongodb:
-      uri: "mongodb://localhost:27017/e-commerce"
+
   main:
     banner-mode: "off"
+  mail:
+    host: "${APP_MAIL_HOST:smtp.gmail.com}"
+    port: "${APP_MAIL_PORT:587}"
+    username: "${APP_MAIL_USERNAME:mohamedalmahdy02@gmail.com}"
+    password: "${APP_MAIL_PASSWORD:tjjz vwpx tnyw flie}"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
-logging:
-  level:
-    root: WARN
-    org.springframework: WARN
-    org.mongodb: WARN
-    org.springframework.boot.autoconfigure: WARN
+# logging:
+#   level:
+#     root: WARN
+#     org.springframework: WARN
+#     org.mongodb: WARN
+#     org.springframework.boot.autoconfigure: WARN
 app:
   encryption:
-      secret-key: "secrek-key-for-encryption"
-      algorithem: "AES"
+    secret-key: "${APP_ENCRYPTION_SECRET_KEY:secrek-key-for-1}"
+    algorithem: "${APP_ENCRYPTION_ALGORITHM:AES}"
+  jwt:
+    jwtSecretKey: "${APP_JWT_SECRET_KEY:my-super-secret-key-thats-long-enough-for-hmac-sha-256}"
+    accessTokenExpiration: "${APP_JWT_ACCESS_EXPIRATION:10800000}"
+    refreshTokenExpiration: "${APP_JWT_REFRESH_EXPIRATION:604800000}"
+  email:
+    to: "${APP_MAIL_TO:}"
