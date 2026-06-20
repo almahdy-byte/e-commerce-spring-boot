@@ -3,16 +3,16 @@ package com.nazer.e_commerce.users.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.nazer.e_commerce.common.global.PaginatedResponse;
+import com.nazer.e_commerce.common.global.PaginatedResponse.Pagination;
 import com.nazer.e_commerce.users.Dto.UpdateProfileDto;
 import com.nazer.e_commerce.users.enums.Provider;
 import com.nazer.e_commerce.users.enums.UserRoles;
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getUsers(int page, int size, UserRoles role, Provider provider, String search) {
+    public PaginatedResponse<User> getUsers(int page, int size, UserRoles role, Provider provider, String search) {
         List<Criteria> criteriaList = new ArrayList<>();
 
         if (role != null) {
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
         if (search != null && !search.isBlank()) {
             String regex = search.replaceAll("[^a-zA-Z0-9\\s]", "").trim();
             criteriaList.add(new Criteria().orOperator(
-                Criteria.where("firstName").regex(regex, "i"),
+                Criteria.where("userName").regex(regex, "i"),
                 Criteria.where("email").regex(regex, "i")
             ));
         }
@@ -83,12 +83,25 @@ public class UserServiceImpl implements UserService {
             query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
         }
 
-        Pageable pageable = PageRequest.of(page, size);
+        System.out.println(query);
+        long total = mongoTemplate.count(query, User.class);
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        System.out.println(pageable);
         query.with(pageable);
-
+        System.out.println(query);
         List<User> users = mongoTemplate.find(query, User.class);
-        long count = mongoTemplate.count(Query.of(query).limit(-1).skip(-1), User.class);
 
-        return PageableExecutionUtils.getPage(users, pageable, () -> count);
+        Pagination pagination = Pagination.builder()
+            .total(total)
+            .totalPages((int) Math.ceil((double) total / size))
+            .page(page)
+            .count(users.size())
+            .build();
+
+        return PaginatedResponse.<User>builder()
+            .data(users)
+            .pagination(pagination)
+            .build();
     }
 }

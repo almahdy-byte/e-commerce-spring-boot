@@ -1,4 +1,4 @@
-package com.nazer.e_commerce.auth.service;
+package com.nazer.e_commerce.auth;
 
 import java.util.Optional;
 
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.nazer.e_commerce.auth.Dto.*;
+import com.nazer.e_commerce.auth.service.AuthService;
 import com.nazer.e_commerce.common.email.EmailService;
 import com.nazer.e_commerce.common.security.SecurityService;
 import com.nazer.e_commerce.common.token.TokenPayload;
