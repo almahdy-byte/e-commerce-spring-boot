@@ -25,8 +25,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity
             .status(500)
             .body(Map.of(
-                "error", "Internal server error",
-                "status", 500
+                "error", ex.getMessage(),
+                "status", ex.getCause()
             ));
     }
 }

@@ -119,7 +119,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         long total = mongoTemplate.count(query, Category.class);
 
-        PageRequest pageable = PageRequest.of(page-1, size);
+        PageRequest pageable = PageRequest.of(page, size);
         query.with(pageable);
 
         List<Category> categories = mongoTemplate.find(query, Category.class);
